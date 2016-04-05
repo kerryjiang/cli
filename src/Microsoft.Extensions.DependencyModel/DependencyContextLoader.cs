@@ -60,24 +60,25 @@ namespace Microsoft.Extensions.DependencyModel
             }
 
             DependencyContext context = null;
-            var reader = _jsonReaderFactory();
-
-            if (IsEntryAssembly(assembly))
+            using (var reader = _jsonReaderFactory())
             {
-                context = LoadEntryAssemblyContext(reader);
-            }
-
-            if (context == null)
-            {
-                context = LoadAssemblyContext(assembly, reader);
-            }
-
-            if (context?.Target.IsPortable == true)
-            {
-                var runtimeContext = LoadRuntimeContext(reader);
-                if (runtimeContext != null)
+                if (IsEntryAssembly(assembly))
                 {
-                    context = context.Merge(runtimeContext);
+                    context = LoadEntryAssemblyContext(reader);
+                }
+
+                if (context == null)
+                {
+                    context = LoadAssemblyContext(assembly, reader);
+                }
+
+                if (context?.Target.IsPortable == true)
+                {
+                    var runtimeContext = LoadRuntimeContext(reader);
+                    if (runtimeContext != null)
+                    {
+                        context = context.Merge(runtimeContext);
+                    }
                 }
             }
             return context;

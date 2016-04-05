@@ -30,6 +30,19 @@ namespace Microsoft.Extensions.DependencyModel
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _stringPool.Clear();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
         private bool IsRuntimeTarget(string name) => name.Contains(DependencyContextStrings.VersionSeperator);
 
         private DependencyContext Read(JObject root)
